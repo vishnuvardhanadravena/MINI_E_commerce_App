@@ -7,7 +7,7 @@ class CartBottomSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProductProvider>(context);
+    final provider = Provider.of<ProductProvider>(context,listen: true);
 
     return Container(
       padding: const EdgeInsets.all(18),

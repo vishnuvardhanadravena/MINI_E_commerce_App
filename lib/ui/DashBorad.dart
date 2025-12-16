@@ -21,8 +21,8 @@ class _DashboradState extends State<Dashborad> {
   ];
   static const List<Widget> _widgetOptions = <Widget>[
     HomeSceeen(),
-    ProductDetailsScreen(productId: 14),
     CartScreen(),
+    ProductDetailsScreen(productId: 14),
 
     Text('Settings Page'),
   ];
@@ -50,10 +50,10 @@ class _DashboradState extends State<Dashborad> {
               iconData = Icons.home_outlined;
               break;
             case 1:
-              iconData = Icons.search;
+              iconData = Icons.shopping_cart;
               break;
             case 2:
-              iconData = Icons.shopping_cart;
+              iconData = Icons.favorite_border;
               break;
             case 3:
               iconData = Icons.settings;

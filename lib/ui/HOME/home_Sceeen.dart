@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mini_e_commerce/provider/prodctprovider.dart';
 import 'package:mini_e_commerce/ui/HOME/ProductCardWidget.dart';
+import 'package:mini_e_commerce/ui/SearchResultScreen.dart';
 import 'package:mini_e_commerce/ui/productSereenDetaies.dart';
 import 'package:mini_e_commerce/utils/catagireyTabBar.dart';
 import 'package:mini_e_commerce/utils/search_bar.dart';
@@ -16,73 +17,159 @@ class HomeSceeen extends StatefulWidget {
 
 class _HomeSceeenState extends State<HomeSceeen> {
   int selectedIndex = 0;
+  late TextEditingController searchController;
 
   @override
   void initState() {
     super.initState();
-    Provider.of<ProductProvider>(context, listen: false).fetchCategories();
+    searchController = TextEditingController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProductProvider>(context, listen: false).fetchCategories();
+    });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final logs = [
+    final banners = [
       "https://cdn-icons-png.flaticon.com/128/281/281764.png",
       "https://cdn-icons-png.flaticon.com/128/731/731985.png",
       "https://cdn-icons-png.flaticon.com/128/145/145802.png",
-      "https://cdn-icons-png.flaticon.com/128/4055/4055978.png",
-      "https://cdn-icons-png.flaticon.com/128/10087/10087824.png",
+    ];
+
+    final List<Color> colors = [
+      Colors.pink,
+      Colors.blue,
+      Colors.orange,
+      Colors.grey,
     ];
 
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(Icons.menu_sharp, color: Colors.grey, size: 22),
+        leading: const Icon(Icons.menu, color: Colors.grey),
         actions: const [
           Padding(
             padding: EdgeInsets.all(8.0),
-            child: Icon(Icons.notifications, color: Colors.grey, size: 22),
+            child: Icon(Icons.notifications, color: Colors.grey),
           ),
         ],
       ),
-      body: Consumer<ProductProvider>(
-        builder: (context, prov, child) {
-          if (prov.isLoading && prov.categories.isEmpty) {
-            return const Center(
-              child: CircularProgressIndicator(color: Colors.orange),
-            );
-          }
 
+      body: Consumer<ProductProvider>(
+        builder: (context, prov, _) {
           return SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SearchBarWidget(
-                  controller: TextEditingController(),
+                  controller: searchController,
+                  onChanged: (value) {
+                    prov.search(value);
+                  },
                   onFilterTap: () {},
                 ),
-                const SizedBox(height: 30),
 
-                BannerSliderWidget(banners: logs),
+                if (prov.searchedCategories.isNotEmpty ||
+                    prov.searchedProducts.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black12, blurRadius: 6),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        ...prov.searchedCategories.map(
+                          (cat) => ListTile(
+                            leading: const Icon(
+                              Icons.category,
+                              color: Colors.orange,
+                            ),
+                            title: Text(cat["label"]),
+                            onTap: () async {
+                              searchController.clear();
+                              prov.clearSearch();
 
-                const SizedBox(height: 30),
+                              await prov.fetchProductsByCategory(cat["label"]);
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => SearchResultScreen(
+                                    title: cat["label"],
+                                    selectedProduct:
+                                        null, // category has no selected product
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+
+                        ...prov.searchedProducts.map(
+                          (p) => ListTile(
+                            leading: const Icon(
+                              Icons.shopping_bag,
+                              color: Colors.blue,
+                            ),
+                            title: Text(p.title),
+                            onTap: () async {
+                              searchController.clear();
+                              prov.clearSearch();
+
+                              await prov.fetchProductsByCategory(p.category);
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => SearchResultScreen(
+                                    title: p.title,
+                                    selectedProduct: p, // product first
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                const SizedBox(height: 20),
+
+                BannerSliderWidget(banners: banners),
+
+                const SizedBox(height: 20),
 
                 CategoryTabBarWidget(
                   categories: prov.categories,
                   selectedIndex: selectedIndex,
                   onTap: (index) {
-                    setState(() {
-                      selectedIndex = index;
-                    });
-
-                    final cat = prov.categories[index]["label"];
-                    prov.fetchProductsByCategory(cat);
+                    setState(() => selectedIndex = index);
+                    prov.fetchProductsByCategory(
+                      prov.categories[index]["label"],
+                    );
                   },
                 ),
 
                 const SizedBox(height: 10),
 
                 prov.isLoading
-                    ? const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
+                    ? const Padding(
+                        padding: EdgeInsets.all(30),
+                        child: Center(
                           child: CircularProgressIndicator(
                             color: Colors.orange,
                           ),
@@ -96,14 +183,18 @@ class _HomeSceeenState extends State<HomeSceeen> {
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              mainAxisSpacing: 10,
                               crossAxisSpacing: 10,
-                              childAspectRatio: 1,
+                              mainAxisSpacing: 10,
+                              childAspectRatio: 0.9,
                             ),
                         itemBuilder: (context, index) {
                           final product = prov.products[index];
                           return ProductCardWidget(
                             product: product,
+                            colors: colors,
+                            selectedColor: 0,
+                            onTapcolors: (_) {},
+                            onFavorite: () {},
                             onTap: (p) {
                               Navigator.push(
                                 context,
@@ -113,7 +204,6 @@ class _HomeSceeenState extends State<HomeSceeen> {
                                 ),
                               );
                             },
-                            onFavorite: () {},
                           );
                         },
                       ),

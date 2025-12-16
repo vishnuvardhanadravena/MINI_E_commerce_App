@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class SearchBarWidget extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onFilterTap;
+  final ValueChanged<String> onChanged;
 
   const SearchBarWidget({
     super.key,
     required this.controller,
     required this.onFilterTap,
+    required this.onChanged,
   });
 
   @override
@@ -30,6 +32,7 @@ class SearchBarWidget extends StatelessWidget {
                 hintText: "Search...",
                 border: InputBorder.none,
               ),
+              onChanged: onChanged, 
             ),
           ),
           GestureDetector(

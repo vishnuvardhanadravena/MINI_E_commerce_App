@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:mini_e_commerce/model/Product.dart';
+import 'package:mini_e_commerce/utils/ColorSelector.dart';
 
 class ProductCardWidget extends StatelessWidget {
   final Product product;
   final Function(Product) onTap;
   final VoidCallback onFavorite;
+  final Function(dynamic) onTapcolors;
+  final selectedColor;
+  final List<Color> colors;
 
   const ProductCardWidget({
     super.key,
     required this.product,
     required this.onTap,
     required this.onFavorite,
+    required this.onTapcolors,
+    required this.selectedColor,
+    required this.colors,
   });
 
   @override
@@ -69,13 +76,25 @@ class ProductCardWidget extends StatelessWidget {
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 4),
-            Text(
-              "\$${product.price}",
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "\$${product.price}",
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                ColorSelector(
+                  colors: colors,
+                  selectedIndex: selectedColor,
+                  onColorSelected: (index) {
+                    onTapcolors(index);
+                  },
+                ),
+              ],
             ),
           ],
         ),

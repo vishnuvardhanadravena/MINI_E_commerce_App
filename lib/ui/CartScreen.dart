@@ -10,7 +10,7 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProductProvider>(context);
+    final provider = Provider.of<ProductProvider>(context, listen: true);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -29,9 +29,9 @@ class CartScreen extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(12),
-              itemCount: provider.cartproducts.length,
+              itemCount: provider.cartProducts.length,
               itemBuilder: (context, index) {
-                final product = provider.cartproducts[index];
+                final product = provider.cartProducts[index];
                 return CartItemCard(product: product);
               },
             ),

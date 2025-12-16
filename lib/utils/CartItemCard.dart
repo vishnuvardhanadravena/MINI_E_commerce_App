@@ -9,7 +9,7 @@ class CartItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProductProvider>(context, listen: false);
+    final provider = Provider.of<ProductProvider>(context, listen: true);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
@@ -27,11 +27,14 @@ class CartItemCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              product.image,
+            child: Container(
               height: 80,
               width: 80,
-              fit: BoxFit.cover,
+              color: Colors.grey.shade200,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.network(product.image, fit: BoxFit.contain),
+              ),
             ),
           ),
 
@@ -41,14 +44,27 @@ class CartItemCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  product.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        product.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => provider.removeFromCart(product),
+                      child: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  ],
                 ),
 
                 const SizedBox(height: 2),
@@ -60,73 +76,134 @@ class CartItemCard extends StatelessWidget {
 
                 const SizedBox(height: 6),
 
-                Text(
-                  "\$${product.price}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "\$${product.price}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(30),
+                        // border: Border.all(),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              provider.removeFromCart(product);
+                            },
+                            child: Container(
+                              width: 28,
+                              height: 28,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: const Icon(
+                                Icons.remove,
+                                size: 18,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(width: 10),
+
+                          Text(
+                            product.quantity.toString(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          const SizedBox(width: 10),
+
+                          GestureDetector(
+                            onTap: () {
+                              provider.addToCart(product);
+                            },
+                            child: Container(
+                              width: 28,
+                              height: 28,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: const Icon(
+                                Icons.add,
+                                size: 18,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
 
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  provider.removeOne(product);
-                },
-                child: Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade300,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: const Icon(
-                    Icons.remove,
-                    size: 18,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+          // Row(
+          //   children: [
+          //     GestureDetector(
+          //       onTap: () {
+          //         provider.removeOne(product);
+          //       },
+          //       child: Container(
+          //         width: 28,
+          //         height: 28,
+          //         decoration: BoxDecoration(
+          //           color: Colors.orange.shade300,
+          //           borderRadius: BorderRadius.circular(6),
+          //         ),
+          //         child: const Icon(
+          //           Icons.remove,
+          //           size: 18,
+          //           color: Colors.white,
+          //         ),
+          //       ),
+          //     ),
 
-              const SizedBox(width: 10),
+          //     const SizedBox(width: 10),
 
-              Text(
-                product.quantity.toString(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
+          //     Text(
+          //       product.quantity.toString(),
+          //       style: const TextStyle(
+          //         fontWeight: FontWeight.bold,
+          //         fontSize: 16,
+          //       ),
+          //     ),
 
-              const SizedBox(width: 10),
+          //     const SizedBox(width: 10),
 
-              GestureDetector(
-                onTap: () {
-                  provider.addToCart(product);
-                },
-                child: Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: const Icon(Icons.add, size: 18, color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(width: 10),
-
-          GestureDetector(
-            onTap: () => provider.removeFromCart(product),
-            child: const Icon(Icons.delete_outline, color: Colors.orange),
-          ),
+          //     GestureDetector(
+          //       onTap: () {
+          //         provider.addToCart(product);
+          //       },
+          //       child: Container(
+          //         width: 28,
+          //         height: 28,
+          //         decoration: BoxDecoration(
+          //           color: Colors.orange,
+          //           borderRadius: BorderRadius.circular(6),
+          //         ),
+          //         child: const Icon(Icons.add, size: 18, color: Colors.white),
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
