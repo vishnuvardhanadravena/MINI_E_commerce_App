@@ -58,7 +58,10 @@ class CartItemCard extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => provider.removeFromCart(product),
+                      onTap: () {
+                        product.quantity = -1;
+                        provider.removeFromCart(product);
+                      },
                       child: const Icon(
                         Icons.delete_outline,
                         color: Colors.orange,
@@ -129,7 +132,7 @@ class CartItemCard extends StatelessWidget {
 
                           GestureDetector(
                             onTap: () {
-                              provider.addToCart(product);
+                              provider.addToCart(product,"cart");
                             },
                             child: Container(
                               width: 28,

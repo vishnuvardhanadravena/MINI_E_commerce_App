@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mini_e_commerce/ui/CartScreen.dart';
 import 'package:mini_e_commerce/ui/HOME/home_Sceeen.dart';
+import 'package:mini_e_commerce/ui/Profile.dart';
 import 'package:mini_e_commerce/ui/productSereenDetaies.dart';
 
 class Dashborad extends StatefulWidget {
@@ -24,7 +25,7 @@ class _DashboradState extends State<Dashborad> {
     CartScreen(),
     ProductDetailsScreen(productId: 14),
 
-    Text('Settings Page'),
+    ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {

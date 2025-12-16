@@ -731,6 +731,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                               count: product!.count,
                               quantity: quantity,
                             ),
+                            "",
                           );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

@@ -7,7 +7,7 @@ class CartBottomSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProductProvider>(context,listen: true);
+    final provider = Provider.of<ProductProvider>(context, listen: true);
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -25,49 +25,32 @@ class CartBottomSection extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Discount box
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 14,
-                    ),
-                    hintText: "Enter Discount Code",
-                    filled: true,
-                    fillColor: Colors.grey.shade200,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
+          TextField(
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 14,
               ),
-
-              const SizedBox(width: 10),
-
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              hintText: "Enter Discount Code",
+              filled: true,
+              fillColor: Colors.grey.shade200,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
+              ),
+              suffixIcon: TextButton(
+                onPressed: () {},
                 child: const Text(
                   "Apply",
                   style: TextStyle(
+                    fontSize: 20,
+                    color: Color.fromARGB(255, 229, 141, 10),
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-
           const SizedBox(height: 18),
 
           Row(
@@ -112,8 +95,8 @@ class CartBottomSection extends StatelessWidget {
             height: 55,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.orange,
-              borderRadius: BorderRadius.circular(16),
+              color: Color.fromARGB(255, 229, 141, 10),
+              borderRadius: BorderRadius.circular(30),
             ),
             child: const Center(
               child: Text(

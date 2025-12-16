@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mini_e_commerce/provider/prodctprovider.dart';
+import 'package:mini_e_commerce/ui/CartScreen.dart';
 import 'package:mini_e_commerce/ui/HOME/ProductCardWidget.dart';
 import 'package:mini_e_commerce/ui/SearchResultScreen.dart';
 import 'package:mini_e_commerce/ui/productSereenDetaies.dart';
@@ -51,8 +52,53 @@ class _HomeSceeenState extends State<HomeSceeen> {
     ];
 
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.orange),
+              child: Text(
+                "Mini E-Commerce",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.shopping_cart),
+              title: const Text("Cart"),
+              onTap: () {
+                Navigator.pop(context); // close drawer
+
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.favorite),
+              title: const Text("Wishlist"),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
-        leading: const Icon(Icons.menu, color: Colors.grey),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Colors.grey),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
         actions: const [
           Padding(
             padding: EdgeInsets.all(8.0),
@@ -102,15 +148,17 @@ class _HomeSceeenState extends State<HomeSceeen> {
                               searchController.clear();
                               prov.clearSearch();
 
-                              await prov.fetchProductsByCategory(cat["label"]);
+                              // await prov.fetchProductsByCategory(cat["label"]);
 
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => SearchResultScreen(
-                                    title: cat["label"],
-                                    selectedProduct:
-                                        null, // category has no selected product
+                                  builder: (_) => ChangeNotifierProvider(
+                                    create: (_) => ProductProvider()
+                                      ..fetchProductsByCategory(cat["label"]),
+                                    child: SearchResultScreen(
+                                      title: cat["label"],
+                                    ),
                                   ),
                                 ),
                               );
@@ -129,14 +177,19 @@ class _HomeSceeenState extends State<HomeSceeen> {
                               searchController.clear();
                               prov.clearSearch();
 
-                              await prov.fetchProductsByCategory(p.category);
+                              // await prov.fetchProductsByCategory(p.category);
 
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => SearchResultScreen(
-                                    title: p.title,
-                                    selectedProduct: p, // product first
+                                  builder: (_) => ChangeNotifierProvider(
+                                    create: (_) =>
+                                        ProductProvider()
+                                          ..fetchProductsByCategory(p.category),
+                                    child: SearchResultScreen(
+                                      title: p.category,
+                                      selectedProduct: p,
+                                    ),
                                   ),
                                 ),
                               );

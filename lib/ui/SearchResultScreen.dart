@@ -24,7 +24,7 @@ class SearchResultScreen extends StatelessWidget {
         ? prov.products
         : [
             selectedProduct!,
-            ...prov.products.where((p) => p.id != selectedProduct!.id).toList(),
+            ...prov.products.where((p) => p.id != selectedProduct!.id),
           ];
 
     return Scaffold(

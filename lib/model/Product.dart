@@ -34,4 +34,17 @@ class Product {
       count: json['rating']['count'],
     );
   }
+  Product copyWith({int? quantity}) {
+    return Product(
+      id: id,
+      title: title,
+      price: price,
+      description: description,
+      category: category,
+      image: image,
+      rate: rate,
+      count: count,
+      quantity: quantity ?? this.quantity,
+    );
+  }
 }
